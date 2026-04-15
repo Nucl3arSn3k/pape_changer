@@ -1,6 +1,9 @@
-use rand::{Rng, RngExt, rng};
-use dbus::blocking::Connection;
+use rand::{RngExt, rng};
 use std::time::Duration;
+
+#[cfg(target_os = "linux")]
+use dbus::blocking::Connection;
+#[cfg(target_os = "linux")]
 pub fn changepape() {
     let entries: Vec<_> = std::fs::read_dir("/home/quinton/Pictures/img/papes") //Mod to dummy out dirs lists them in toplevel. muy no bueno
     .expect("Failed to read directory")
@@ -17,7 +20,7 @@ pub fn changepape() {
 }
 
 
-
+#[cfg(target_os = "linux")]
 fn set_wallpaper(path: &str) { //Set and remove somehow
     let conn = Connection::new_session().expect("Failed to connect to DBus");
     let proxy = conn.with_proxy(
