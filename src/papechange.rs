@@ -9,6 +9,7 @@ pub fn changepape() {
     .expect("Failed to read directory")
     .filter_map(|e| e.ok())
     .map(|e| e.path())
+    .filter(|d| d.is_file())
     .collect();
 
     if entries.is_empty() { return; }
