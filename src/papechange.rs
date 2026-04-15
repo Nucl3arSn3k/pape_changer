@@ -27,7 +27,7 @@ fn set_wallpaper(path: &str) { //Set and remove somehow
     let proxy = conn.with_proxy(
         "org.kde.plasmashell",
         "/PlasmaShell",
-        Duration::from_millis(5000),
+        Duration::from_millis(6000),
     );
     //JS for internal scripting,EWWWWW
     let script = format!(
