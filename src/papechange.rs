@@ -50,4 +50,12 @@ path
 //So the wallpaper is kept in ~/.config/plasma-org.kde.plasma.desktop-appletsrc file
 //get full pwd for that and then see if I can snipe it out of recents while leaving it set....hrmm
 //
+#[cfg(target_os = "linux)]
+fn pape_amnesia() {
 
+
+
+
+
+
+}
