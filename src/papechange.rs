@@ -2,9 +2,11 @@
 use dbus::blocking::Connection;
 use rand::{RngExt, rng};
 use std::fs::File;
+use std::io::Read;
+use std::path::PathBuf;
 use std::time::Duration;
 #[cfg(target_os = "linux")]
-pub fn changepape() {
+pub fn changepape_rand() {
     let entries: Vec<_> = std::fs::read_dir("/home/quinton/Pictures/img/papes") //Mod to dummy out dirs lists them in toplevel. muy no bueno
         .expect("Failed to read directory")
         .filter_map(|e| e.ok())
@@ -20,6 +22,12 @@ pub fn changepape() {
     let pape = &entries[idx];
     set_wallpaper(pape.to_str().unwrap());
     println!("{}", pape.display());
+}
+
+pub fn changepape(papepath: &PathBuf) {
+    let pape = papepath;
+
+    set_wallpaper(pape.to_str().unwrap());
 }
 
 #[cfg(target_os = "linux")]
@@ -54,8 +62,13 @@ fn set_wallpaper(path: &str) {
 //get full pwd for that and then see if I can snipe it out of recents while leaving it set....hrmm
 //
 #[cfg(target_os = "linux")]
-fn pape_amnesia() -> std::io::Result<()> {
-    let mut file = File::open("~/.config/plasma-org.kde.plasma.desktop-appletsrc")?;
-
+pub fn pape_amnesia(path: &str) -> std::io::Result<()> {
+    let mut file = File::open("/home/quinton/.config/plasmarc")?; //actually here. Match on path probably?
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+    let itr: Vec<&str> = contents.split(",").collect();
+    for x in itr {
+        println!("{}", x);
+    }
     Ok(())
 }
