@@ -2,7 +2,8 @@
 use dbus::blocking::Connection;
 use rand::{RngExt, rng};
 use std::fs::File;
-use std::io::Read;
+use std::fs::OpenOptions;
+use std::io::{self, Read, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::time::Duration;
 #[cfg(target_os = "linux")]
@@ -63,12 +64,23 @@ fn set_wallpaper(path: &str) {
 //
 #[cfg(target_os = "linux")]
 pub fn pape_amnesia(path: &str) -> std::io::Result<()> {
-    let mut file = File::open("/home/quinton/.config/plasmarc")?; //actually here. Match on path probably?
+    use std::io::Write;
+
+    let mut file = OpenOptions::new()
+        .read(true)
+        .write(true)
+        .open("/home/quinton/.config/plasmarc")?; //actually here. Match on path probably?
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
-    let itr: Vec<&str> = contents.split(",").collect();
-    for x in itr {
-        println!("{}", x);
-    }
+    let new_contents = contents //will not work on first entry,split logic isn't great for now.
+        .split(",")
+        .filter(|x| x.trim() != path)
+        .collect::<Vec<&str>>()
+        .join(",");
+    println!("{}", new_contents);
+    file.seek(std::io::SeekFrom::Start(0))?;
+    file.set_len(0)?;
+    file.write_all(new_contents.as_bytes())?; //into bytes heavier,so as_bytes better here
+
     Ok(())
 }
