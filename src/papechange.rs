@@ -57,6 +57,11 @@ fn set_wallpaper(path: &str) {
     proxy
         .method_call::<(), _, _, _>("org.kde.PlasmaShell", "evaluateScript", (script,))
         .expect("Failed to set wallpaper");
+
+    match pape_amnesia(path) {
+        Ok(o) => println!("{:?}", o),
+        Err(e) => eprintln!("{}", e),
+    }
 }
 
 //So the wallpaper is kept in ~/.config/plasma-org.kde.plasma.desktop-appletsrc file
