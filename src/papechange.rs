@@ -1,18 +1,20 @@
-use rand::{RngExt, rng};
-use std::time::Duration;
-
 #[cfg(target_os = "linux")]
 use dbus::blocking::Connection;
+use rand::{RngExt, rng};
+use std::fs::File;
+use std::time::Duration;
 #[cfg(target_os = "linux")]
 pub fn changepape() {
     let entries: Vec<_> = std::fs::read_dir("/home/quinton/Pictures/img/papes") //Mod to dummy out dirs lists them in toplevel. muy no bueno
-    .expect("Failed to read directory")
-    .filter_map(|e| e.ok())
-    .map(|e| e.path())
-    .filter(|d| d.is_file())
-    .collect();
+        .expect("Failed to read directory")
+        .filter_map(|e| e.ok())
+        .map(|e| e.path())
+        .filter(|d| d.is_file())
+        .collect();
 
-    if entries.is_empty() { return; }
+    if entries.is_empty() {
+        return;
+    }
 
     let idx = rng().random_range(0..entries.len());
     let pape = &entries[idx];
@@ -20,9 +22,9 @@ pub fn changepape() {
     println!("{}", pape.display());
 }
 
-
 #[cfg(target_os = "linux")]
-fn set_wallpaper(path: &str) { //Set and remove somehow
+fn set_wallpaper(path: &str) {
+    //Set and remove somehow
     let conn = Connection::new_session().expect("Failed to connect to DBus");
     let proxy = conn.with_proxy(
         "org.kde.plasmashell",
@@ -40,22 +42,20 @@ fn set_wallpaper(path: &str) { //Set and remove somehow
     d.writeConfig('Image', 'file://{}');
 }}
 "#,
-path
+        path
     );
 
-    proxy.method_call::<(), _, _, _>("org.kde.PlasmaShell", "evaluateScript", (script,))
-    .expect("Failed to set wallpaper");
+    proxy
+        .method_call::<(), _, _, _>("org.kde.PlasmaShell", "evaluateScript", (script,))
+        .expect("Failed to set wallpaper");
 }
 
 //So the wallpaper is kept in ~/.config/plasma-org.kde.plasma.desktop-appletsrc file
 //get full pwd for that and then see if I can snipe it out of recents while leaving it set....hrmm
 //
 #[cfg(target_os = "linux")]
-fn pape_amnesia() {
+fn pape_amnesia() -> std::io::Result<()> {
+    let mut file = File::open("~/.config/plasma-org.kde.plasma.desktop-appletsrc")?;
 
-
-
-
-
-
+    Ok(())
 }
