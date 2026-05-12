@@ -5,6 +5,7 @@ use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::{self, Read, Seek, SeekFrom};
 use std::path::PathBuf;
+use std::thread;
 use std::time::Duration;
 #[cfg(target_os = "linux")]
 pub fn changepape_rand() {
@@ -57,7 +58,7 @@ fn set_wallpaper(path: &str) {
     proxy
         .method_call::<(), _, _, _>("org.kde.PlasmaShell", "evaluateScript", (script,))
         .expect("Failed to set wallpaper");
-
+    thread::sleep(Duration::from_secs(2));
     match pape_amnesia(path) {
         Ok(o) => println!("{:?}", o),
         Err(e) => eprintln!("{}", e),
