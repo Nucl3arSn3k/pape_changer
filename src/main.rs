@@ -8,7 +8,16 @@ fn main() {
     #[cfg(target_os = "linux")]
     let val: PathBuf =
         "/home/quinton/Pictures/img/papes/Anime/Code Geass/1686815339034879.jpg".into();
-    papechange::changepape(&val);
+    papechange::changepape(&val); //set and forget?
+
+    match papechange::pape_amnesia(&val.to_str().unwrap()) {
+        Ok(val) => {
+            println!("Forgetting {:?}", val)
+        }
+        Err(ec) => {
+            println!("Forgetfullness failed {}", ec)
+        }
+    }
     /*
     match papechange::pape_amnesia(
         ,
